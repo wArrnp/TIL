@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <style>
+      #div1,
+      #div2 {
+        min-height: 50px;
+        border: 1px solid black;
+
+        margin: 30px 0;
+      }
+      .show {
+        display: block !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="div1" ondrop="drop(event)" ondragover="allowDrop(event)">
+      <p id="div1-text" style="display:none">drop here !</p>
+    </div>
+
+    <div id="div2" ondrop="drop(event)" ondragover="allowDrop(event)">
+      <p id="div2-text" style="display:none">drop here !</p>
+    </div>
+
+    <img
+      id="drag1"
+      src="./img/man-user.png"
+      draggable="true"
+      ondragstart="drag(event)"
+    />
+
+    <img
+      id="drag2"
+      src="./img/woman.png"
+      draggable="true"
+      ondragstart="drag(event)"
+    />
+
+    <script>
+      function allowDrop(ev) {
+        ev.preventDefault();
+      }
+
+      function drag(ev) {
+        ev.dataTransfer.setData("text", ev.target.id);
+      }
+      function drop(ev) {
+        ev.preventDefault();
+        const data = ev.dataTransfer.getData("text");
+        ev.target.appendChild(document.getElementById(data));
+      }
+    </script>
+  </body>
+</html>

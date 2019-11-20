@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import styled from "styled-components";
 import TabItem from "../TabItem/TabItem";
 
@@ -9,50 +9,46 @@ const TabBarDiv = styled.div`
 `;
 
 function TabBar() {
-  let dragTabIndex = null;
-  let dragOverTabIndex = null;
+  let dragTabIndex = useRef();
+  let dragOverTabIndex = useRef();
+  console.log(dragTabIndex.current);
+  console.log(dragOverTabIndex.current);
 
   const [tabItems, setTabItems] = useState(["A", "B", "C", "D"]);
   const [newTab, setNewTab] = useState("");
 
-  const handleDragStart = useCallback(
-    (index, event) => {
-      console.log(dragOverTabIndex, dragTabIndex);
+  const handleDragStart = useCallback((index, event) => {
+    console.log(dragOverTabIndex, dragTabIndex);
 
-      dragTabIndex = index;
-    },
-    [tabItems]
-  );
+    dragTabIndex.current = index;
+  }, []);
 
-  const handleDragOver = useCallback(
-    (index, event) => {
-      event.preventDefault();
-      console.log(dragOverTabIndex, dragTabIndex);
-      dragOverTabIndex = index;
-    },
-    [tabItems]
-  );
+  const handleDragOver = useCallback((index, event) => {
+    event.preventDefault();
+    console.log(dragOverTabIndex, dragTabIndex);
+    dragOverTabIndex.current = index;
+  }, []);
 
   const handleDragEnd = useCallback(
     (index, event) => {
-      console.log(dragOverTabIndex, dragTabIndex);
+      console.log(dragOverTabIndex.current, dragTabIndex.current);
       if (
-        dragTabIndex !== null &&
-        dragOverTabIndex !== null &&
-        dragTabIndex !== dragOverTabIndex
+        dragTabIndex.current !== undefined &&
+        dragOverTabIndex.current !== undefined &&
+        dragTabIndex.current !== dragOverTabIndex.current
       ) {
         // if (dragTabIndex < dragOverTabIndex) dragOverTabIndex--;
         const newTabItems = [...tabItems];
         newTabItems.splice(
-          dragOverTabIndex,
+          dragOverTabIndex.current,
           0,
-          newTabItems.splice(dragTabIndex, 1)[0]
+          newTabItems.splice(dragTabIndex.current, 1)[0]
         );
         setTabItems(newTabItems);
       }
 
-      dragTabIndex = null;
-      dragOverTabIndex = null;
+      dragTabIndex.current = undefined;
+      dragOverTabIndex.current = undefined;
     },
     [tabItems]
   );
@@ -65,7 +61,7 @@ function TabBar() {
         handleDragStart={e => handleDragStart(i, e)}
         handleDragOver={e => handleDragOver(i, e)}
         handleDragEnd={e => handleDragEnd(i, e)}
-        isDragOverTab={dragOverTabIndex === i}
+        isDragOverTab={dragOverTabIndex.current === i}
         label={d}
       />
     );
